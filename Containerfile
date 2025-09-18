@@ -13,7 +13,6 @@ RUN --mount=type=tmpfs,dst=/tmp --mount=type=tmpfs,dst=/root \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal -y && \
     git clone https://github.com/bootc-dev/bootc.git /tmp/bootc && \
     cd /tmp/bootc && \
-    sed -i 's/dead_code = "deny"/# dead_code = "deny"/g' Cargo.toml && \
     PATH=/root/.cargo/bin:$PATH make && \
     make install-all && \
     make install-initramfs-dracut && \
