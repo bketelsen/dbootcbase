@@ -50,20 +50,11 @@ RUN apt remove -y $DEV_DEPS && \
     apt autoremove -y
 ENV DEV_DEPS=
 
-RUN rm -rf /var /boot && \
-    ln -s /var/home /home && \
-    ln -s /var/roothome /root && \
-    ln -s /var/srv /srv && \
-    ln -s sysroot/ostree ostree && \
-    ln -s /var/usrlocal /usr/local && \
-    mkdir -p /sysroot /var/home /boot && \
-    rm -rf /var/log /home /root /usr/local /srv
+
 
 COPY files/usr/lib/tmpfiles.d/bootc.conf /usr/lib/tmpfiles.d/bootc.conf
-RUN systemd-tmpfiles --create /usr/lib/tmpfiles.d/bootc.conf
 
 
 # Necessary for `bootc install`
 COPY files/ostree/prepare-root.conf /usr/lib/ostree/prepare-root.conf
 
-RUN bootc container lint
