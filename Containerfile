@@ -2,24 +2,15 @@ FROM docker.io/library/debian:unstable
 
 ARG DEBIAN_FRONTEND=noninteractive
 # Antipattern but we are doing this since `apt`/`debootstrap` does not allow chroot installation on unprivileged podman builds
-ENV DEV_DEPS="libzstd-dev libssl-dev pkg-config libostree-dev curl git build-essential meson libfuse3-dev go-md2man dracut whois"
+ENV DEV_DEPS="dracut"
 
 RUN rm /etc/apt/apt.conf.d/docker-gzip-indexes /etc/apt/apt.conf.d/docker-no-languages && \
     apt update -y && \
-    apt install -y $DEV_DEPS ostree
+    apt install -y $DEV_DEPS ostree ca-certificates
 
-ENV CARGO_FEATURES="composefs-backend"
-RUN --mount=type=tmpfs,dst=/tmp --mount=type=tmpfs,dst=/root \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal -y && \
-    git clone https://github.com/bootc-dev/bootc.git /tmp/bootc && \
-    cd /tmp/bootc && \
-    PATH=/root/.cargo/bin:$PATH make && \
-    make install-all && \
-    make install-initramfs-dracut && \
-    git clone https://github.com/p5/coreos-bootupd.git -b sdboot-support /tmp/bootupd && \
-    cd /tmp/bootupd && \
-    /root/.cargo/bin/cargo build --release --bins --features systemd-boot && \
-    make install
+COPY noahm.sources /etc/apt/sources.list.d
+COPY noahm.gpg /etc/apt
+RUN apt-get update && apt-get -y install bootc coreos-bootupd
 
 ENV DRACUT_NO_XATTR=1
 RUN apt install -y \
