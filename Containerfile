@@ -6,7 +6,8 @@ ENV DEV_DEPS="dracut"
 
 RUN rm /etc/apt/apt.conf.d/docker-gzip-indexes /etc/apt/apt.conf.d/docker-no-languages && \
     apt update -y && \
-    apt install -y $DEV_DEPS ostree ca-certificates
+    touch /etc/kernel/postinst.d/dracut && \
+    yes no | apt install -y $DEV_DEPS ostree ca-certificates
 
 COPY noahm.sources /etc/apt/sources.list.d
 COPY noahm.gpg /etc/apt
