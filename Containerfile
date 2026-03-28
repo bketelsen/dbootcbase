@@ -1,4 +1,4 @@
-FROM docker.io/library/debian:unstable
+FROM docker.io/library/debian:unstable@sha256:19258a21c98cd78ab58c1036a1f83c060533e34d3ee2fa28966778d8389c332e
 
 ARG DEBIAN_FRONTEND=noninteractive
 # Antipattern but we are doing this since `apt`/`debootstrap` does not allow chroot installation on unprivileged podman builds
